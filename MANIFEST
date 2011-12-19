@@ -1,0 +1,8 @@
+Changes
+Hexdump.xs
+Makefile.PL
+MANIFEST
+ppport.h
+README
+t/Devel-Hexdump.t
+lib/Devel/Hexdump.pm
