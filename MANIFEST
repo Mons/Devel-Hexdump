@@ -1,8 +1,13 @@
 Changes
 Hexdump.xs
+lib/Devel/Hexdump.pm
+LICENSE
 Makefile.PL
 MANIFEST
+MANIFEST.SKIP
+MYMETA.json
+MYMETA.yml
 ppport.h
 README
-t/Devel-Hexdump.t
-lib/Devel/Hexdump.pm
+t/00-load.t
+t/01-test.t
