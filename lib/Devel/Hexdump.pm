@@ -3,80 +3,43 @@ package Devel::Hexdump;
 use 5.008008;
 use strict;
 use warnings;
-
-require Exporter;
-
-our @ISA = qw(Exporter);
-
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use Devel::Hexdump ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = ( 'all' => [ qw(
-	xd
-) ] );
-
-our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
-
-our @EXPORT = qw(
-	xd
-);
-
+use parent 'Exporter';
+our %EXPORT_TAGS = ( 'all' => [ our @EXPORT = our @EXPORT_OK = qw(xd) ]);
 our $VERSION = '0.01';
 
 require XSLoader;
 XSLoader::load('Devel::Hexdump', $VERSION);
 
-# Preloaded methods go here.
-
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
-
 =head1 NAME
 
-Devel::Hexdump - Perl extension for blah blah blah
+Devel::Hexdump - Print nice hex dump of binary data
 
 =head1 SYNOPSIS
 
-  use Devel::Hexdump;
-  blah blah blah
+    use Devel::Hexdump 'xd';
 
-=head1 DESCRIPTION
-
-Stub documentation for Devel::Hexdump, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
-
-Blah blah blah.
-
-=head2 EXPORT
-
-None by default.
-
-
-
-=head1 SEE ALSO
-
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+    my $binary = '...';
+    print xd $binary, {
+        row   => 10, # print 10 bytes in a row
+        cols  => 2,  # split in 2 column groups, separated with <hsp?>
+          hsp => 2,  # add 2 spaces between hex columns
+          csp => 1,  # add 1 space between char columns
+        hpad  => 1,  # pad each hex byte with 1 space (ex: " 00" )
+        cpad  => 1,  # pad each char byte with 1 space
+    };
+    
+    # or just
+    print xd $binary;
 
 =head1 AUTHOR
 
-Vladimir Perepelitsa, E<lt>mons@park.rambler.ruE<gt>
+Mons Anderson, E<lt>mons@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2011 by Vladimir Perepelitsa
+Copyright (C) 2011 by Mons Anderson
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.14.2 or,

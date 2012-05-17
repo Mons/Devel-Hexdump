@@ -16,7 +16,7 @@ typedef struct {
 	U8 cols;
 } hexdump_conf;
 
-static SV * hexdump(char *data, STRLEN size, hexdump_conf *cf)
+static SV * myhexdump(char *data, STRLEN size, hexdump_conf *cf)
 {
 	/* dumps size bytes of *data to stdout. Looks like:
 	 * [0000] 75 6E 6B 6E 6F 77 6E 20 30 FF 00 00 00 00 39 00 unknown 0.....9.
@@ -76,6 +76,7 @@ static SV * hexdump(char *data, STRLEN size, hexdump_conf *cf)
 		/* store char str (for right side) */
 		my_snprintf(curchr, 2+cpad, "%c%-*s", c, cpad, ""); curchr += 1+cpad;
 		
+		//warn("n=%d, row=%d, every=%d\n",n,row,every);
 		if( n % row == 0 ) {
 			/* line completed */
 			//printf("[%-4.4s]   %s  %s\n", addrstr, hexstr, chrstr);
@@ -83,7 +84,7 @@ static SV * hexdump(char *data, STRLEN size, hexdump_conf *cf)
 			//sv_catpvf(rv,"[%-4.4s]   %-*s %-*s\n", addrstr, hex_sz-1, hexstr, chr_sz-1, chrstr);
 			hexstr[0] = 0; curhex = hexstr;
 			chrstr[0] = 0; curchr = chrstr;
-		} else if( n % every == 0 ) {
+		} else if( every && ( n % every == 0 ) ) {
 			/* half line: add whitespaces */
 			my_snprintf(curhex, 1+hsp, "%-*s", hsp, ""); curhex += hsp;
 			my_snprintf(curchr, 1+csp, "%-*s", csp, ""); curchr += csp;
@@ -100,7 +101,7 @@ static SV * hexdump(char *data, STRLEN size, hexdump_conf *cf)
 	return rv;
 }
 
-MODULE = Devel::Hexdump		PACKAGE = Devel::Hexdump		
+MODULE = Devel::Hexdump		PACKAGE = Devel::Hexdump
 
 SV *
 xd(buf,...)
@@ -118,7 +119,7 @@ xd(buf,...)
 		cf.cols   = 4;
 		if (items > 1){
 			if ( SvOK(ST(1)) && SvROK(ST(1)) && SvTYPE( SvRV( ST(1) ) ) == SVt_PVHV) {
-				HV * conf = SvRV(ST(1));
+				HV * conf = (HV *) SvRV(ST(1));
 				SV **key;
 				if ((key = hv_fetch(conf, "row", 3, 0)) && SvIOK(*key))  cf.row = SvIV(*key);
 				if ((key = hv_fetch(conf, "hpad", 4, 0)) && SvIOK(*key)) cf.hpad = SvIV(*key);
@@ -132,6 +133,6 @@ xd(buf,...)
 			}
 		}
 		p = SvPV(buf,l);
-		RETVAL = hexdump(p, l, &cf);
+		RETVAL = myhexdump(p, l, &cf);
 	OUTPUT:
 		RETVAL
