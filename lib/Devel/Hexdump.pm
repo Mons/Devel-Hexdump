@@ -3,9 +3,9 @@ package Devel::Hexdump;
 use 5.008008;
 use strict;
 use warnings;
-use parent 'Exporter';
+BEGIN { require Exporter; our @ISA = 'Exporter'; }
 our %EXPORT_TAGS = ( 'all' => [ our @EXPORT = our @EXPORT_OK = qw(xd) ]);
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 require XSLoader;
 XSLoader::load('Devel::Hexdump', $VERSION);
